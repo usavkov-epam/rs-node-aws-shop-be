@@ -1,8 +1,8 @@
 import data from '../products.js';
 
 const mockDB = {
-  getAll: () => data,
-  getById: (id: string) => data.find(product => product.id === id),
+  getAll: async () => data,
+  getById: async (id: string) => data.find(product => product.id === id),
 };
 
 export class Products {
@@ -17,8 +17,12 @@ export class Products {
   }
 
   async getById(id: string) {
-    if (!id) return new Error('No id provided');
+    if (!id) throw new Error('No id provided');
 
-    return this.db.getById(id) || new Error("Product not found");
+    const product = await this.db.getById(id);
+
+    if (!product) throw new Error(`Product with id ${id} not found`);
+
+    return product;
   }
 };

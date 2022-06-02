@@ -4,7 +4,20 @@ export const handler = async (event: any, _context: any) => {
   const { pathParameters = {} } = event;
 
   const products = new Products();
-  const product = await products.getById(pathParameters.productId);
   
-  return product;
+  try {
+    const product = await products.getById(pathParameters.productId);
+  
+    return {
+      statusCode: 200,
+      body: JSON.stringify(product),
+    };
+  } catch (error) {
+    return {
+      statusCode: error.statusCode || 400,
+      body: JSON.stringify({
+        message: error.message,
+      }),
+    }
+  }
 };
