@@ -1,4 +1,4 @@
-import data from '../products.js';
+import data from '../../tests/fixtures/products';
 
 const mockDB = {
   getAll: async () => data,
@@ -21,7 +21,7 @@ export class Products {
 
     const product = await this.db.getById(id);
 
-    if (!product) throw new Error(`Product with id ${id} not found`);
+    if (!product) throw new Error(`Product not found`);
 
     return product;
   }

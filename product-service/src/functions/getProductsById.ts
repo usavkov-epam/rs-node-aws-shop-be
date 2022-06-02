@@ -14,7 +14,7 @@ export const handler = async (event: any, _context: any) => {
     };
   } catch (error) {
     return {
-      statusCode: error.statusCode || 400,
+      statusCode: error.statusCode || 404,
       body: JSON.stringify({
         message: error.message,
       }),
