@@ -14,6 +14,15 @@ provider:
   runtime: nodejs12.x
   region: eu-west-1
   stage: dev
+  httpApi:
+    cors:
+      allowedOrigins:
+        - https://dys3ug6jzmiuj.cloudfront.net
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+      allowedMethods:
+      - GET
 
 functions:
   getProductsById:
