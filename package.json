@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "swagger": "cd swagger && yarn start"
+  }
+}
