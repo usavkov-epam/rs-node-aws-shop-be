@@ -1,7 +1,10 @@
 import { createProduct } from '../controllers/product';
 
 export const handler = async (event: any, _context: any) => {
-  const { body } = event;
+  const { body, routeKey } = event;
+
+  console.log(`LOGGER path - ${routeKey}`);
+  console.log(`LOGGER body: ${body}`);
 
   try {
     const product = await createProduct(JSON.parse(body));
