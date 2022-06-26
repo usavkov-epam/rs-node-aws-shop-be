@@ -55,18 +55,20 @@ export const create = async ({
     const { rows: products } = await client.query(`
       INSERT INTO products (title, description, price)
       VALUES ('${title}', '${description}', ${price})
+      RETURNING *
     `)
     
     await client.query(`
       INSERT INTO stocks (product_id, count)
-      VALUES ('${products[0].id}', '${count}')
+      VALUES ('${products[0].id}', ${count})
     `)
 
     await client.query('COMMIT');
-
+    
     return { ...products[0], count };
   } catch (error) {
     await client.query('ROLLBACK');
+    throw { statusCode: 500, message: error?.message || 'Transaction failed' }
   } finally {
     await client.end();
   }
