@@ -1,8 +1,7 @@
-import { Products } from '../helpers';
+import { getAllProducts } from '../controllers/product';
 
 export const handler = async (_event: any, _context: any) => {
-  const products = new Products();
-  const allProducts = await products.getAll();
+  const allProducts = await getAllProducts();
 
   return allProducts;
 };
