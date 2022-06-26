@@ -7,7 +7,6 @@ export default {
       description: 'Operations about products',
     }
   ],
-
   paths: {
     '/products': {
       get: {
@@ -32,7 +31,63 @@ export default {
               },
             },
           },
+          '500': {
+            description: 'Server error',
+            content: {
+              'application/json': {
+                schema: components.schemas.ServerError,
+              },
+            },
+          },
         },
+        "x-amazon-apigateway-integration" : {
+          payloadFormatVersion: "2.0",
+          type: "aws_proxy",
+          httpMethod: "POST",
+          uri: "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:626677577371:function:product-service-dev-getProductsList/invocations",
+          connectionType: "INTERNET",
+          timeoutInMillis : 6500
+        }
+      },
+      post: {
+        summary: 'Create new product',
+        description: 'Create new product',
+        operationId: 'createProduct',
+        tags: ['Product service'],
+        responses: {
+          '201': {
+            description: 'Successful operation',
+            content: {
+              'application/json': {
+                schema: components.schemas.Product,
+              },
+            },
+          },
+          '400': {
+            description: 'Bad request',
+            content: {
+              'application/json': {
+                schema: components.schemas.BadRequest,
+              },
+            },
+          },
+          '500': {
+            description: 'Server error',
+            content: {
+              'application/json': {
+                schema: components.schemas.ServerError,
+              },
+            },
+          },
+        },
+        "x-amazon-apigateway-integration" : {
+          payloadFormatVersion: "2.0",
+          type: "aws_proxy",
+          httpMethod: "POST",
+          uri: "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:626677577371:function:product-service-dev-createProduct/invocations",
+          connectionType: "INTERNET",
+          timeoutInMillis : 6500
+        }
       },
     },
     '/products/{productId}': {
@@ -58,7 +113,23 @@ export default {
               },
             },
           },
+          '500': {
+            description: 'Server error',
+            content: {
+              'application/json': {
+                schema: components.schemas.ServerError,
+              },
+            },
+          },
         },
+        "x-amazon-apigateway-integration" : {
+          payloadFormatVersion: "2.0",
+          type: "aws_proxy",
+          httpMethod: "POST",
+          uri: "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:626677577371:function:product-service-dev-getProductsById/invocations",
+          connectionType: "INTERNET",
+          timeoutInMillis : 6500
+        }
       },
     },
   },
