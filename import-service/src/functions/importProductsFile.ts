@@ -14,7 +14,7 @@ export const handler = async (event: any, _context: any) => {
     if (errors) {
       return {
         statusCode: 400,
-        body: JSON.stringify(errors),
+        body: JSON.stringify(errors, null, 2),
       };
     }  
     

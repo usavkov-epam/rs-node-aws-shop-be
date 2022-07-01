@@ -10,3 +10,5 @@ jspm_packages
 # Lockfile
 package-lock.json
 yarn.lock
+
+buckets/

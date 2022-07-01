@@ -7,14 +7,13 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-offline
 
-
 custom:
   client:
     bucketName: rs-node-aws-import-bucket
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   region: eu-west-1
   stage: dev
   httpApi:
@@ -25,23 +24,22 @@ provider:
         - Content-Type
         - Authorization
       allowedMethods:
-      - GET
-      - POST
+        - GET
+        - POST
+        - PUT
   iam:
     role:
       statements:
-        - Effect: "Allow"
+        - Effect: Allow
           Action:
-           - "s3:ListBucket"
-          Resource: arn:aws:s3:::${self:custom.client.bucketName}/*
-        - Effect: "Allow"
+           - s3:ListBucket
+          Resource:
+            - arn:aws:s3:::${self:custom.client.bucketName}/*
+        - Effect: Allow
           Action:
-           - "s3:GetObject"
-          Resource: arn:aws:s3:::${self:custom.client.bucketName}/*
-        - Effect: "Allow"
-          Action:
-           - "s3:PutObject"
-          Resource: arn:aws:s3:::${self:custom.client.bucketName}/*
+            - s3:*
+          Resource:
+            - arn:aws:s3:::${self:custom.client.bucketName}/*
 
 functions:
   importProductsFile:
@@ -54,3 +52,13 @@ functions:
             parameters:
               querystrings:
                 name: true
+  importFileParser:
+    handler: src/functions/importFileParser.handler
+    events:
+      - s3:
+          bucket: ${self:custom.client.bucketName}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
+

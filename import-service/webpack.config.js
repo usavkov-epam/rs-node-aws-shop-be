@@ -4,6 +4,9 @@ const externals = require("webpack-node-externals");
 
 module.exports = {
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
+  optimization: {
+		minimize: false,
+	},
   entry: slsw.lib.entries,
   externals: [externals()],
   resolve: {
