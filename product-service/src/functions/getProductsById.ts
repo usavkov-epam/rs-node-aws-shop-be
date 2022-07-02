@@ -1,12 +1,13 @@
-import { Products } from '../helpers';
+import { getProductById } from '../controllers/product';
 
 export const handler = async (event: any, _context: any) => {
-  const { pathParameters = {} } = event;
+  const { pathParameters = {}, routeKey } = event;
 
-  const products = new Products();
+  console.log(`LOGGER path - ${routeKey}`);
+  console.log(`LOGGER params - ${JSON.stringify(pathParameters)}`);
   
   try {
-    const product = await products.getById(pathParameters.productId);
+    const product = await getProductById(pathParameters.productId);
   
     return {
       statusCode: 200,

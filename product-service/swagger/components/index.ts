@@ -25,5 +25,14 @@ export default {
         },
       },
     },
+    ServerError: {
+      type: 'object',
+      properties: {
+        message: {
+          type: 'string',
+          example: 'Server error',
+        },
+      }
+    },
   },
 };

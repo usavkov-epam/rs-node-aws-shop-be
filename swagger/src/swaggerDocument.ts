@@ -16,6 +16,15 @@ export default {
     }
   },
 
+  servers : [ {
+    url : "https://t554pox8g5.execute-api.eu-west-1.amazonaws.com/{basePath}",
+    variables : {
+      basePath : {
+        default : ""
+      }
+    }
+  } ],
+
   tags: [
     ...products.tags,
   ],
@@ -23,4 +32,13 @@ export default {
   paths: {
     ...products.paths,
   },
+
+  "x-amazon-apigateway-cors" : {
+    "allowMethods" : [ "GET", "POST" ],
+    "allowHeaders" : [ "authorization", "content-type" ],
+    "maxAge" : 0,
+    "allowCredentials" : false,
+    "allowOrigins" : [ "https://dys3ug6jzmiuj.cloudfront.net" ]
+  },
+  "x-amazon-apigateway-importexport-version" : "1.0"
 };      

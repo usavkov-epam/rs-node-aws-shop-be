@@ -1,1 +1,1 @@
-export * from './products';
+export { getClient } from './pgClient';
