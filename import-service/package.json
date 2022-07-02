@@ -4,7 +4,8 @@
   "description": "BE part for shop",
   "main": "serverless.ts",
   "scripts": {
-    "swagger": "cross-env cd $INIT_CWD/../ && yarn swagger"
+    "swagger": "cross-env cd $INIT_CWD/../ && yarn swagger",
+    "test": "jest"
   },
   "engines": {
     "node": ">=14.15.0"
