@@ -95,6 +95,15 @@ export default {
         summary: 'Get product by id',
         description: 'Get product by id',
         operationId: 'getProductsById',
+        parameters: [
+          {
+            in: 'path',
+            name: 'productId',
+            description: 'UUID of the product.',
+            type: 'string',
+            required: true,
+          }
+        ],
         tags: ['Product service'],
         responses: {
           '200': {

@@ -45,7 +45,7 @@ functions:
   importProductsFile:
     handler: src/functions/importProductsFile.handler
     events:
-      - http:
+      - httpApi:
           path: /import
           method: get
           request:

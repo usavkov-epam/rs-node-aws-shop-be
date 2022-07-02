@@ -3,23 +3,32 @@ import components from './components';
 export default {
   tags: [
     {
-      name: 'Product service',
-      description: 'Operations about products',
+      name: 'Import service',
+      description: 'Operations about import',
     }
   ],
   paths: {
-    '/products': {
+    '/import': {
       get: {
-        summary: 'Get all products',
-        description: 'Get all products',
-        operationId: 'getProductsList',
-        tags: ['Product service'],
+        summary: 'Import CSV file',
+        description: 'Import CSV file from UI and get signed URL to put objects.',
+        parameters: [
+          {
+            in: 'query',
+            name: 'name',
+            description: 'Name of importing file.',
+            type: 'string',
+            required: true,
+          }
+        ],
+        operationId: 'importCSV',
+        tags: ['Import service'],
         responses: {
           '200': {
             description: 'Successful operation',
             content: {
-              'application/json': {
-                schema: components.schemas.ProductList,
+              'text/plain': {
+                schema: components.schemas.Import,
               },
             },
           },
@@ -44,89 +53,7 @@ export default {
           payloadFormatVersion: "2.0",
           type: "aws_proxy",
           httpMethod: "POST",
-          uri: "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:626677577371:function:product-service-dev-getProductsList/invocations",
-          connectionType: "INTERNET",
-          timeoutInMillis : 6500
-        }
-      },
-      post: {
-        summary: 'Create new product',
-        description: 'Create new product',
-        operationId: 'createProduct',
-        tags: ['Product service'],
-        responses: {
-          '201': {
-            description: 'Successful operation',
-            content: {
-              'application/json': {
-                schema: components.schemas.Product,
-              },
-            },
-          },
-          '400': {
-            description: 'Bad request',
-            content: {
-              'application/json': {
-                schema: components.schemas.BadRequest,
-              },
-            },
-          },
-          '500': {
-            description: 'Server error',
-            content: {
-              'application/json': {
-                schema: components.schemas.ServerError,
-              },
-            },
-          },
-        },
-        "x-amazon-apigateway-integration" : {
-          payloadFormatVersion: "2.0",
-          type: "aws_proxy",
-          httpMethod: "POST",
-          uri: "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:626677577371:function:product-service-dev-createProduct/invocations",
-          connectionType: "INTERNET",
-          timeoutInMillis : 6500
-        }
-      },
-    },
-    '/products/{productId}': {
-      get: {
-        summary: 'Get product by id',
-        description: 'Get product by id',
-        operationId: 'getProductsById',
-        tags: ['Product service'],
-        responses: {
-          '200': {
-            description: 'Successful operation',
-            content: {
-              'application/json': {
-                schema: components.schemas.Product,
-              }
-            }
-          },
-          '404': {
-            description: 'Not found',
-            content: {
-              'application/json': {
-                schema: components.schemas.NotFoundError,
-              },
-            },
-          },
-          '500': {
-            description: 'Server error',
-            content: {
-              'application/json': {
-                schema: components.schemas.ServerError,
-              },
-            },
-          },
-        },
-        "x-amazon-apigateway-integration" : {
-          payloadFormatVersion: "2.0",
-          type: "aws_proxy",
-          httpMethod: "POST",
-          uri: "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:626677577371:function:product-service-dev-getProductsById/invocations",
+          uri: "arn:aws:apigateway:eu-west-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-1:626677577371:function:import-service-dev-importProductsFile/invocations",
           connectionType: "INTERNET",
           timeoutInMillis : 6500
         }

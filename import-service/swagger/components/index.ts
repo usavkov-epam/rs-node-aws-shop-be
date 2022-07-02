@@ -1,12 +1,8 @@
-import ProductSchema from '../schemas/Product';
+import ImportSchema from '../schemas/SignedUrl';
 
 export default {
   schemas: {
-    Product: ProductSchema,
-    ProductList: {
-      type: 'array',
-      items: ProductSchema,
-    },
+    Import: ImportSchema,
     BadRequest: {
       type: 'object',
       properties: {
