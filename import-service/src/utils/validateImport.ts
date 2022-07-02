@@ -4,7 +4,7 @@ interface QueryParams {
   [param: string]: string,
 }
 
-const ERRORS = {
+export const ERRORS = {
   [ValidationErrorCodes.nameParamAbsent]: `Query must contain "name" parameter.`,
   [ValidationErrorCodes.invalidExtension]: `Invalid extension of file. Allowed only "csv".`,
 }
