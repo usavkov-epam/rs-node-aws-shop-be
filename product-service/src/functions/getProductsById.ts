@@ -11,14 +11,14 @@ export const handler = async (event: any, _context: any) => {
   
     return {
       statusCode: 200,
-      body: JSON.stringify(product),
+      body: JSON.stringify(product, null, 2),
     };
   } catch (error) {
     return {
       statusCode: error.statusCode || 404,
       body: JSON.stringify({
         message: error.message,
-      }),
+      }, null, 2),
     }
   }
 };

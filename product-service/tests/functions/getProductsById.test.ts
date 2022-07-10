@@ -8,7 +8,7 @@ describe('getProductsById', () => {
 
     expect(result).toEqual({
       statusCode: 200,
-      body: JSON.stringify({...product}),
+      body: JSON.stringify({...product}, null, 2),
     });
   });
 
@@ -19,7 +19,7 @@ describe('getProductsById', () => {
       statusCode: 404,
       body: JSON.stringify({
         message: 'No id provided',
-      }),
+      }, null, 2),
     });
   });
 
@@ -34,7 +34,7 @@ describe('getProductsById', () => {
       statusCode: 404,
       body: JSON.stringify({
         message: 'Product not found',
-      }),
+      }, null, 2),
     });
   });
 });

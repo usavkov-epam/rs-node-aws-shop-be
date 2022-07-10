@@ -1,4 +1,5 @@
 import products from '../../product-service/swagger';
+import importSwagger from '../../import-service/swagger';
 
 export default {
   openapi: '3.0.1',
@@ -27,10 +28,12 @@ export default {
 
   tags: [
     ...products.tags,
+    ...importSwagger.tags,
   ],
 
   paths: {
     ...products.paths,
+    ...importSwagger.paths,
   },
 
   "x-amazon-apigateway-cors" : {
