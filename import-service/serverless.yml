@@ -11,11 +11,27 @@ custom:
   client:
     bucketName: rs-node-aws-import-bucket
 
+resources:
+  Resources:
+    SQSQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalogItemsQueue
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+
 provider:
   name: aws
   runtime: nodejs14.x
   region: eu-west-1
   stage: dev
+  environment:
+    SQS_URL:
+      Ref: SQSQueue
+    SNS_URL:
+      Ref: SNSTopic
   httpApi:
     cors:
       allowedOrigins:
@@ -40,6 +56,14 @@ provider:
             - s3:*
           Resource:
             - arn:aws:s3:::${self:custom.client.bucketName}/*
+        - Effect: Allow
+          Action: sqs:*
+          Resource:
+            Fn::GetAtt: [SQSQueue, Arn]
+        - Effect: Allow
+          Action: sns:*
+          Resource:
+            - Ref: SNSTopic
 
 functions:
   importProductsFile:
@@ -61,4 +85,10 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
-
+  catalogBatchProcess:
+    handler: src/functions/catalogBatchProcess.handler
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt: [SQSQueue, Arn]
