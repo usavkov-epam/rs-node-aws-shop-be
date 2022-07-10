@@ -10,6 +10,9 @@ plugins:
 custom:
   client:
     bucketName: rs-node-aws-import-bucket
+  bundle:
+    ignorePackages:
+      - pg-native
 
 resources:
   Resources:
@@ -21,7 +24,23 @@ resources:
       Type: AWS::SNS::Topic
       Properties:
         TopicName: createProductTopic
-
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: megayuras@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+    SNSSubscriptionCount:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: yury.saukou@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+        FilterPolicy:
+          moreThan100Items:
+            - true
 provider:
   name: aws
   runtime: nodejs14.x
@@ -30,19 +49,10 @@ provider:
   environment:
     SQS_URL:
       Ref: SQSQueue
-    SNS_URL:
+    SNS_ARN:
       Ref: SNSTopic
   httpApi:
-    cors:
-      allowedOrigins:
-        - https://dys3ug6jzmiuj.cloudfront.net
-      allowedHeaders:
-        - Content-Type
-        - Authorization
-      allowedMethods:
-        - GET
-        - POST
-        - PUT
+    cors: true
   iam:
     role:
       statements:
@@ -90,5 +100,6 @@ functions:
     events:
       - sqs:
           batchSize: 5
+          maximumBatchingWindow: 60
           arn:
             Fn::GetAtt: [SQSQueue, Arn]
