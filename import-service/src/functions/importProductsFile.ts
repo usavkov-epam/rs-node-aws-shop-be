@@ -26,6 +26,9 @@ export const handler = async (event: any, _context: any) => {
     const signedUrl = await getSignedUrl(s3, command);
 
     return {
+      headers: {
+        'Access-Control-Allow-Origin': 'https://dys3ug6jzmiuj.cloudfront.net',
+      },
       statusCode: 200,
       body: signedUrl,
     };

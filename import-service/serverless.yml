@@ -51,7 +51,7 @@ resources:
           gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'GET,OPTIONS,PUT,POST,DELETE'"
         ResponseType: DEFAULT_4XX
-        RestApiId: pkd0uy3q04
+        RestApiId: f6ng5ipg3h
 
 provider:
   name: aws
@@ -91,19 +91,20 @@ functions:
   importProductsFile:
     handler: src/functions/importProductsFile.handler
     events:
-      - httpApi:
+      - http:
           path: /import
+          cors: true
+          authorizer:
+            name: tokenAuthorizer
+            arn: ${self:custom.basicAuthorizer.tokenAuthorizer}
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            type: token
           method: get
           request:
             parameters:
               querystrings:
                 name: true
-        authorizer:
-          name: tokenAuthorizer
-          arn: ${self:custom.basicAuthorizer.tokenAuthorizer}
-          resultTtlInSeconds: 0
-          identitySource: method.request.header.Authorization
-          type: token
 
   importFileParser:
     handler: src/functions/importFileParser.handler
