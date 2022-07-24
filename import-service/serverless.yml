@@ -10,23 +10,49 @@ plugins:
 custom:
   client:
     bucketName: rs-node-aws-import-bucket
+  bundle:
+    ignorePackages:
+      - pg-native
 
+resources:
+  Resources:
+    SQSQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalogItemsQueue
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: megayuras@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+    SNSSubscriptionCount:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: yury.saukou@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+        FilterPolicy:
+          moreThan100Items:
+            - true
 provider:
   name: aws
   runtime: nodejs14.x
   region: eu-west-1
   stage: dev
+  environment:
+    SQS_URL:
+      Ref: SQSQueue
+    SNS_ARN:
+      Ref: SNSTopic
   httpApi:
-    cors:
-      allowedOrigins:
-        - https://dys3ug6jzmiuj.cloudfront.net
-      allowedHeaders:
-        - Content-Type
-        - Authorization
-      allowedMethods:
-        - GET
-        - POST
-        - PUT
+    cors: true
   iam:
     role:
       statements:
@@ -40,6 +66,14 @@ provider:
             - s3:*
           Resource:
             - arn:aws:s3:::${self:custom.client.bucketName}/*
+        - Effect: Allow
+          Action: sqs:*
+          Resource:
+            Fn::GetAtt: [SQSQueue, Arn]
+        - Effect: Allow
+          Action: sns:*
+          Resource:
+            - Ref: SNSTopic
 
 functions:
   importProductsFile:
@@ -61,4 +95,11 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
-
+  catalogBatchProcess:
+    handler: src/functions/catalogBatchProcess.handler
+    events:
+      - sqs:
+          batchSize: 5
+          maximumBatchingWindow: 60
+          arn:
+            Fn::GetAtt: [SQSQueue, Arn]

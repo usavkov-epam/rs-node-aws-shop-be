@@ -4,6 +4,10 @@ import {
   DeleteObjectCommand,
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
+import {
+  SQSClient,
+  SendMessageCommand,
+} from "@aws-sdk/client-sqs";
 import * as parseCsv from 'csv-parser';
 
 import { BUCKET_NAME } from '../constants';
@@ -13,7 +17,8 @@ export const handler = async (event: any, _context: any) => {
   try {
     const { Records } = event;
     const s3 = new S3Client({ region: 'eu-west-1' });
-
+    const sqs = new SQSClient({ region: 'eu-west-1' });
+    
     for (const record of Records) {
       const isNotCsv = validateExtension(record.s3.object.key);
 
@@ -25,9 +30,23 @@ export const handler = async (event: any, _context: any) => {
 
         const buffer = [];
 
-        object.Body
+        await new Promise<void>(resolve => {
+          object.Body
           .pipe(parseCsv())
-          .on('data', (data) => buffer.push(data))
+          .on('data', async (data) => {
+            buffer.push(data);
+
+            try {
+              await sqs.send(new SendMessageCommand({
+                MessageBody: JSON.stringify(data),
+                QueueUrl: process.env.SQS_URL,
+              }));
+            
+              console.log('PRODUCT QUEUED:\n', JSON.stringify(data, null, 2));
+            } catch (error) {
+              console.log('SQS ERROR', error);
+            }
+          })
           .on('end', async () => {
             await s3.send(new CopyObjectCommand({
               Bucket: BUCKET_NAME,
@@ -41,7 +60,9 @@ export const handler = async (event: any, _context: any) => {
             }));
 
             console.log('PARSED OBJECT: ', JSON.stringify(buffer, null, 2));
+            resolve();
           })
+        })
       }
     }
     
