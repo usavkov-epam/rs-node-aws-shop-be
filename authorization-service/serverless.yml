@@ -14,4 +14,7 @@ provider:
   stage: dev
   httpApi:
     cors: true
-  
+
+functions:
+  basicAuthorizer:
+    handler: src/functions/basicAuthorizer.handler
