@@ -13,6 +13,8 @@ custom:
   bundle:
     ignorePackages:
       - pg-native
+  basicAuthorizer:
+    tokenAuthorizer: arn:aws:lambda:eu-west-1:626677577371:function:authorization-service-dev-basicAuthorizer
 
 resources:
   Resources:
@@ -41,6 +43,16 @@ resources:
         FilterPolicy:
           moreThan100Items:
             - true
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'https://dys3ug6jzmiuj.cloudfront.net'"
+          gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'GET,OPTIONS,PUT,POST,DELETE'"
+        ResponseType: DEFAULT_4XX
+        RestApiId: pkd0uy3q04
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -86,6 +98,13 @@ functions:
             parameters:
               querystrings:
                 name: true
+        authorizer:
+          name: tokenAuthorizer
+          arn: ${self:custom.basicAuthorizer.tokenAuthorizer}
+          resultTtlInSeconds: 0
+          identitySource: method.request.header.Authorization
+          type: token
+
   importFileParser:
     handler: src/functions/importFileParser.handler
     events:
