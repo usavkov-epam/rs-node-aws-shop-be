@@ -1,4 +1,4 @@
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 import { BUCKET_NAME } from '../constants';
@@ -18,7 +18,7 @@ export const handler = async (event: any, _context: any) => {
       };
     }  
     
-    const command = new GetObjectCommand({
+    const command = new PutObjectCommand({
       Bucket: BUCKET_NAME,
       Key: `uploaded/${queryStringParameters.name}`,
     });
@@ -26,6 +26,9 @@ export const handler = async (event: any, _context: any) => {
     const signedUrl = await getSignedUrl(s3, command);
 
     return {
+      headers: {
+        'Access-Control-Allow-Origin': 'https://dys3ug6jzmiuj.cloudfront.net',
+      },
       statusCode: 200,
       body: signedUrl,
     };
