@@ -4,14 +4,14 @@ WORKDIR /app
 
 # Dependencies
 FROM base as dependencies
-COPY package*.json .
+COPY package*.json ./
 RUN npm install \
     && npm cache clean --force
 COPY . .
 
 # Build
 FROM base as build
-COPY --from=dependencies /app .
+COPY --from=dependencies /app ./
 RUN npm run build \
     && npm prune --production
 
